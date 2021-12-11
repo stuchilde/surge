@@ -10,13 +10,14 @@ const fun = init()
 const cookieVal = $request.headers['Cookie']
 const signURLVal = $request.url
 
-fun.msg(`${title}`, signURLVal, cookieVal)
-
-if (cookieVal && signURLVal) {
+if (cookieVal) {
     if (fun.setData(cookieKey, cookieVal)) {
         fun.msg(`${cookieName}`, '获取cookie成功', cookieVal)
         fun.log(`[${cookieName}]获取cookie成功，cookie: ${cookieVal}`)
     }
+}
+
+if (signURLVal) {
     if (fun.setData(signURLKey, signURLVal)) {
         fun.msg(`${cookieName}`, "获取签到URL成功", signURLVal)
         fun.log(`[${cookieName}]获取签到URL成功，URL: ${signURLVal}`)
