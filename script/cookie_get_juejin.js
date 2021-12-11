@@ -10,6 +10,7 @@ const fun = init()
 const cookieVal = $request.headers['Cookie']
 const signURLVal = $request.url
 
+fun.msg(`${title}`, signURLVal, cookieVal)
 
 if (cookieVal && signURLVal) {
     if (fun.setData(cookieKey, cookieVal)) {
