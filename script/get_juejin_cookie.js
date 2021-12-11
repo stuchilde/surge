@@ -8,7 +8,7 @@ const cookieVal = $request.headers['Cookie']
 
 if (cookieVal) {
     if (fun.setData(cookieKey, cookieVal)) {
-        fun.msg(`${cookieName}`, '获取cookie成功', '')
+        fun.msg(`${cookieName}`, '获取cookie成功', cookieVal)
         fun.log(`[${cookieName}]获取cookie成功，cookie: ${cookieVal}`)
     }
 }
