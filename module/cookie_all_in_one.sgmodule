@@ -15,4 +15,4 @@
 
 
 [MITM]
-hostname = api.juejin.cn,weclub.ccc.cmbchina.com
+hostname = api.juejin.cn,weclub.*.cmbchina.com
