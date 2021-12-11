@@ -1,0 +1,12 @@
+#!name=Cookie - All in one By 司徒公子
+#!desc=该模块适用于定时签到脚本的Cookie获取. 集成全部: 司徒公子个人收集常用签到脚本. 您可以在使用后手动将其禁用，以免产生不必要的MITM.
+#!system=ios
+
+[Script]
+
+# > 掘金
+# safari浏览器登陆之后访问 https://juejin.cn/book/m/me
+掘金签到cookie = type=http-request, pattern=https:\/\/juejin\.cn\/book\/m\/me, script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/get_juejin_cookie.js
+
+# > 招商信用卡
+# 微信公众号访问【签到领取积分】
