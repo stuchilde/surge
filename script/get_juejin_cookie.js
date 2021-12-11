@@ -12,7 +12,7 @@ if (cookieVal) {
         fun.log(`[${cookieName}]获取cookie成功，cookie: ${cookieVal}`)
     }
 }
-fun.msg("测试11", "测试222", "测试333")
+
 function init() {
     isSurge = () => {
         return undefined !== this.$httpClient
@@ -24,7 +24,7 @@ function init() {
         if (isSurge()) return $persistentStore.read(key)
         if (isQuanX()) return $prefs.valueForKey(key)
     }
-    setData = (key, value) => {
+    setData = (key, val) => {
         if (isSurge()) return $persistentStore.write(key, val)
         if (isQuanX()) return $prefs.setValueForKey(key, val)
     }
