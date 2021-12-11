@@ -9,4 +9,4 @@
 [Script]
 
 # > 掘金自动签到脚本
-掘金自动签到脚本 = type=cron,cronexp=0 0 10 * * *,script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/task_juejin_auto_sign_in.js,script-update-interval=0
+掘金自动签到脚本 = type=cron,cronexp=10 0 0 * * *,script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/task_juejin_auto_sign_in.js,script-update-interval=0

@@ -1,97 +1,183 @@
+/**
+ * @type {string}
+ * 掘金自动签到脚本
+ */
+
 const title = '掘金'
 
 const cookieKey = 'jue_jin_cookie_key'
 
 const signURLKey = 'jue_jin_sign_url'
 
-util = init()
-sign()
+$utils = utils()
 
-function sign() {
-    let url = {
-        url: util.getData(signURLKey),
+checkIn()
+
+// 签到
+function checkIn() {
+
+    let URL = {
+        url: $utils.read(signURLKey),
         headers: {
-            Cookie: util.getData(cookieKey)
+            'Cookie': $utils.read(cookieKey)
         }
     }
-    url.headers['Origin'] = 'https://juejin.cn'
-    url.headers['Referer'] = 'https://juejin.cn/'
-    url.headers['Accept'] = '*/*'
-    url.headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.4 Safari/605.1.15'
-    util.post(url, (error, response, data) => {
-        let result = JSON.parse(data)
-        // 签到成功
-        if (result && result.err_no === 0) {
-            let subTitle = `签到结果: 成功`
-            util.msg(title + "," + subTitle, result.err_msg, '')
+    $utils.post(URL, function (error, response, data) {
+        if (error) {
+            $utils.data = "签到失败: 接口请求出错 ‼️"
+            console.log(`${title}-${$utils.data} ${error}`)
+            $utils.notify(title, $utils.data, error)
+        } else {
+            const obj = JSON.parse(data)
+            if (obj.err_no === 0) {  // 签到成功
+                $utils.data = "签到成功 🎉"
+                console.log(`${title}-${$utils.data} ${obj.err_msg}`)
+                $utils.notify(title, $utils.data, obj.err_msg)
+            } else { //签到失败
+                $utils.data = "签到失败 ⚠️"
+                console.log(`${title}-${$utils.data} ${obj.err_msg}`)
+                $utils.notify(title, $utils.data, obj.err_msg)
+            }
         }
-        // 签到重复
-        else if (result && result.err_node === 15001) {
-            let subTitle = `签到结果：失败`
-            util.msg(title + "," + subTitle, result.err_msg, '')
-        }
-        // 签到失败
-        else {
-            let subTitle = `签到结果: 失败`
-            util.msg(title + "," + subTitle, result.err_msg, '')
-        }
-        util.log(`${title}, data: ${result}`)
-        util.done()
+        $utils.done()
     })
 }
 
-function init() {
-    isSurge = () => {
-        return undefined !== this.$httpClient
-    };
-    isQuanX = () => {
-        return undefined !== this.$task
-    }
-    getData = (key) => {
-        if (isSurge()) return $persistentStore.read(key)
-        if (isQuanX()) return $prefs.valueForKey(key)
-    }
-    setData = (key, val) => {
-        if (isSurge()) return $persistentStore.write(key, val)
-        if (isQuanX()) return $prefs.setValueForKey(key, val)
-    }
-    msg = (title, subTitle, body) => {
-        if (isSurge()) $notification.post(title, subTitle, body)
-        if (isQuanX()) $notify(title, subTitle, body)
-    }
-    get = (url, cb) => {
-        if (isSurge()) {
-            $httpClient.get(url, cb)
+function utils() {
+    const times = 0
+    const start = Date.now()
+    const isRequest = typeof $request != "undefined"
+    const isSurge = typeof $httpClient != "undefined"
+    const isQuanX = typeof $task != "undefined"
+    const isLoon = typeof $loon != "undefined"
+    const isJSBox = typeof $app != "undefined" && typeof $http != "undefined"
+    const isNode = typeof require == "function" && !isJSBox;
+    const node = (() => {
+        if (isNode) {
+            const request = require('request');
+            return ({
+                request
+            })
+        } else {
+            return null
         }
-        if (isQuanX()) {
-            url.method = 'GET'
-            $task.fetch(url).then((resp) => cb(null, {}, resp.body))
+    })()
+    const notify = (title, subtitle, message) => {
+        if (isQuanX) $notify(title, subtitle, message)
+        if (isSurge) $notification.post(title, subtitle, message)
+        if (isNode) log('\n' + title + '\n' + subtitle + '\n' + message)
+        if (isJSBox) $push.schedule({
+            title: title,
+            body: subtitle ? subtitle + "\n" + message : message
+        })
+    }
+    const write = (value, key) => {
+        if (isQuanX) return $prefs.setValueForKey(value, key)
+        if (isSurge) return $persistentStore.write(value, key)
+    }
+    const read = (key) => {
+        if (isQuanX) return $prefs.valueForKey(key)
+        if (isSurge) return $persistentStore.read(key)
+    }
+    const adapterStatus = (response) => {
+        if (response) {
+            if (response.status) {
+                response["statusCode"] = response.status
+            } else if (response.statusCode) {
+                response["status"] = response.statusCode
+            }
+        }
+        return response
+    }
+    const get = (options, callback) => {
+        if (isQuanX) {
+            if (typeof options == "string") options = {
+                url: options
+            }
+            options["method"] = "GET"
+            $task.fetch(options).then(response => {
+                callback(null, adapterStatus(response), response.body)
+            }, reason => callback(reason.error, null, null))
+        }
+        if (isSurge) $httpClient.get(options, (error, response, body) => {
+            callback(error, adapterStatus(response), body)
+        })
+        if (isNode) {
+            node.request(options, (error, response, body) => {
+                callback(error, adapterStatus(response), body)
+            })
+        }
+        if (isJSBox) {
+            if (typeof options == "string") options = {
+                url: options
+            }
+            options["header"] = options["headers"]
+            options["handler"] = function (resp) {
+                let error = resp.error;
+                if (error) error = JSON.stringify(resp.error)
+                let body = resp.data;
+                if (typeof body == "object") body = JSON.stringify(resp.data);
+                callback(error, adapterStatus(resp.response), body)
+            };
+            $http.get(options);
         }
     }
-    post = (url, cb) => {
-        if (isSurge()) {
-            $httpClient.post(url, cb)
+    const post = (options, callback) => {
+        if (isQuanX) {
+            if (typeof options == "string") options = {
+                url: options
+            }
+            options["method"] = "POST"
+            $task.fetch(options).then(response => {
+                callback(null, adapterStatus(response), response.body)
+            }, reason => callback(reason.error, null, null))
         }
-        if (isQuanX()) {
-            url.method = 'POST'
-            $task.fetch(url).then((resp) => cb(null, {}, resp.body))
+        if (isSurge) {
+            options.headers['X-Surge-Skip-Scripting'] = false
+            $httpClient.post(options, (error, response, body) => {
+                callback(error, adapterStatus(response), body)
+            })
+        }
+        if (isNode) {
+            node.request.post(options, (error, response, body) => {
+                callback(error, adapterStatus(response), body)
+            })
+        }
+        if (isJSBox) {
+            if (typeof options == "string") options = {
+                url: options
+            }
+            options["header"] = options["headers"]
+            options["handler"] = function (resp) {
+                let error = resp.error;
+                if (error) error = JSON.stringify(resp.error)
+                let body = resp.data;
+                if (typeof body == "object") body = JSON.stringify(resp.data)
+                callback(error, adapterStatus(resp.response), body)
+            }
+            $http.post(options);
         }
     }
-    log = (message) => {
-        console.log(message)
+    const log = (message) => console.log(message)
+    const time = () => {
+        const end = ((Date.now() - start) / 1000).toFixed(2)
+        return console.log('\n签到用时: ' + end + ' 秒')
     }
-    done = (value = {}) => {
-        $done(value)
+    const done = (value = {}) => {
+        if (isQuanX) return $done(value)
+        if (isSurge) isRequest ? $done(value) : $done()
     }
     return {
-        isSurge,
-        isQuanX,
-        getData,
-        setData,
+        isRequest,
+        isNode,
+        notify,
+        write,
+        read,
         get,
         post,
         log,
-        msg,
-        done,
+        time,
+        times,
+        done
     }
 }
