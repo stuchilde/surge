@@ -1,0 +1,10 @@
+#!name=Task - All in one By 司徒公子
+#!desc=该模块适用于定时签到，司徒公子个人收集常用签到脚本，建议本地安装以便自定义修改签到时间。
+#!system=ios
+
+# Task配置 By 司徒公子
+# GitHub主页(https://github.com/stuchilde)
+# 定时脚本
+
+[Script]
+
