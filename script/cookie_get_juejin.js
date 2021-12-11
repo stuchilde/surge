@@ -1,3 +1,4 @@
+const title = '掘金'
 const cookieName = 'jue_jin'
 
 const cookieKey = 'jue_jin_cookie_key'
@@ -20,6 +21,7 @@ if (cookieVal && signURLVal) {
         fun.log(`[${cookieName}]获取签到URL成功，URL: ${signURLVal}`)
     }
 }
+console.log(`${title}-cookie:${cookieVal},checkin URL:${signURLVal}`);
 
 function init() {
     isSurge = () => {
