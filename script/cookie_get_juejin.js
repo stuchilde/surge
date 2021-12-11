@@ -23,7 +23,6 @@ if (signURLVal) {
         fun.log(`[${cookieName}]获取签到URL成功，URL: ${signURLVal}`)
     }
 }
-console.log(`${title}-cookie:${cookieVal},checkin URL:${signURLVal}`);
 
 function init() {
     isSurge = () => {
@@ -37,8 +36,8 @@ function init() {
         if (isQuanX()) return $prefs.valueForKey(key)
     }
     setData = (key, val) => {
-        if (isSurge()) return $persistentStore.write(key, val)
-        if (isQuanX()) return $prefs.setValueForKey(key, val)
+        if (isSurge()) return $persistentStore.write(val, key)
+        if (isQuanX()) return $prefs.setValueForKey(val, key)
     }
     msg = (title, subTitle, body) => {
         if (isSurge()) $notification.post(title, subTitle, body)
