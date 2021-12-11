@@ -2,14 +2,22 @@ const cookieName = 'jue_jin'
 
 const cookieKey = 'jue_jin_cookie_key'
 
+const signURLKey = 'jue_jin_sign_url'
+
 const fun = init()
 
 const cookieVal = $request.headers['Cookie']
+const signURLVal = $request.url
 
-if (cookieVal) {
+
+if (cookieVal && signURLVal) {
     if (fun.setData(cookieKey, cookieVal)) {
         fun.msg(`${cookieName}`, '获取cookie成功', cookieVal)
         fun.log(`[${cookieName}]获取cookie成功，cookie: ${cookieVal}`)
+    }
+    if (fun.setData(signURLKey, signURLVal)) {
+        fun.msg(`${cookieName}`, "获取签到URL成功", signURLVal)
+        fun.log(`[${cookieName}]获取签到URL成功，URL: ${signURLVal}`)
     }
 }
 
