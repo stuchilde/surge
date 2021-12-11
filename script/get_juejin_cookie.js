@@ -12,7 +12,7 @@ if (cookieVal) {
         fun.log(`[${cookieName}]获取cookie成功，cookie: ${cookieVal}`)
     }
 }
-
+fun.msg("测试11", "测试222", "测试333")
 function init() {
     isSurge = () => {
         return undefined !== this.$httpClient
