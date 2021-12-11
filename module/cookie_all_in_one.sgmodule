@@ -11,7 +11,7 @@
 # > 招商银行信用卡
 # 微信公众号【招商银行信用卡】访问【🔥签到领积分】获取cookie
 # 【🔥签到领积分】链接：https://weclub.xyk.cmbchina.com/SCRMCustomActivityFront/checkin-plus/home?activityCode=checkinPlus
-招商银行信用卡cookie = type=type-request, pattern=https:\/\/weclub\.xyk\.cmbchina\.com\/SCRMCustomActivityFront\/checkin-plus\/request\/get-home-data\.json\?activityCode=checkinPlus,script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/cookie_get_cmbchina.js
+招商银行信用卡cookie = type=http-request, pattern=https:\/\/weclub\.xyk\.cmbchina\.com\/SCRMCustomActivityFront\/checkin-plus\/request\/get-home-data\.json\?activityCode=checkinPlus,script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/cookie_get_cmbchina.js
 
 
 [MITM]
