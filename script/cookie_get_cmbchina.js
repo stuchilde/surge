@@ -3,7 +3,6 @@
  */
 
 
-const checkinURL = 'https://weclub.ccc.cmbchina.com/SCRMCustomActivityFront/checkin/request/checkin.json';
 const cookieKey = 'cmbchina_cookieKey';
 const userAgentKey = 'cmbchina_userAgentKey';
 
