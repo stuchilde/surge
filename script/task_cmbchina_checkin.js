@@ -26,9 +26,8 @@ function checkin() {
             'activityCode': 'checkin'
         })
     }
-
+    $utils.notify(title, '', '')
     $utils.post(URL, function (error, response, data) {
-        $utils.notify(title, JSON.parse(response.body), data)
         const result = JSON.parse(response.body);
         if (!error) {
             $utils.notify(title + "签到失败⚠️", "", "接口请求失败")
