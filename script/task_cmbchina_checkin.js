@@ -26,10 +26,10 @@ function checkin() {
             'activityCode': 'checkin'
         })
     }
-    $utils.notify(title, '', '')
-    $utils.post(URL, function (error, response, data) {
-        const result = JSON.parse(response.body);
-        if (!error) {
+    $utils.post(URL, (error, response, data) => {
+        const result = JSON.parse(data);
+        console.log(result);
+        if (error) {
             $utils.notify(title + "签到失败⚠️", "", "接口请求失败")
         }
         if (result.respCode === 1000) {
@@ -40,7 +40,6 @@ function checkin() {
             $utils.notify(title, "", "签到失败，" + result.respMsg);
         } else {
             $utils.notify(title, "", "签到失败，请查看日志");
-            console.log(response.body)
         }
     })
 }
