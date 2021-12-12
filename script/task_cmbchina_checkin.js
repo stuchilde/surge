@@ -25,7 +25,6 @@ function checkin() {
         body: JSON.stringify({
             'activityCode': 'checkin'
         }),
-        method: 'POST',
     }
     $httpClient.post(URL, (error, response, data) => {
         const result = JSON.parse(data);
@@ -33,14 +32,12 @@ function checkin() {
         if (error) {
             $utils.notify(title + "签到失败⚠️", "", "接口请求失败")
         }
-        if (result.respCode === 1000) {
+        if (result.respCode === "1000") {
             $utils.notify(title, "", "签到成功，获得 " + result.data.awardValue + " 积分🎁");
-        } else if (result.respCode === 1452) {
+        } else if (result.respCode === "1452") {
             $utils.notify(title, "", "签到失败，请获取 cookie");
-        } else if (result.respCode === 'custom_8500') {
-            $utils.notify(title, "", "签到失败，" + result.respMsg);
         } else {
-            $utils.notify(title, "", "签到失败，请查看日志");
+            $utils.notify(title, "", "签到失败，" + result.respMsg);
         }
     })
 }
