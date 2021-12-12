@@ -13,3 +13,6 @@
 
 # > 招商银行信用卡签到
 招商银行信用卡签到脚本 = type=cron,cronexp=20 0 0 * * *,script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/task_cmbchina_checkin.js,script-update-interval=0
+
+# > 京东
+京东 = type=cron,cronexp=30 0 0 * * *,script-path=https://raw.githubusercontent.com/stuchilde/surge/main/script/task_jd_bonus.js,script-update-interval=0
