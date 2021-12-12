@@ -24,9 +24,10 @@ function checkin() {
         },
         body: JSON.stringify({
             'activityCode': 'checkin'
-        })
+        }),
+        method: 'POST',
     }
-    $utils.post(URL, (error, response, data) => {
+    $httpClient.post(URL, (error, response, data) => {
         const result = JSON.parse(data);
         console.log(result);
         if (error) {
