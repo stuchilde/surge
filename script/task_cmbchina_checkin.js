@@ -4,7 +4,7 @@
  */
 
 const title = "招商银行信用卡"
-const checkinURL = 'https://weclub.ccc.cmbchina.com/SCRMCustomActivityFront/checkin/request/checkin.json';
+const checkinURL = 'https://weclub.xyk.cmbchina.com/SCRMCustomActivityFront/checkin-plus/request/checkin.json';
 const cookieKey = 'cmbchina_cookieKey';
 const userAgentKey = 'cmbchina_userAgentKey';
 
