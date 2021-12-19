@@ -1,11 +1,13 @@
 /*
 README：https://github.com/yichahucha/surge/tree/master
  */
+
 const $tool = new Tool()
 const path1 = "/amdc/mobileDispatch"
 const path2 = "/gw/mtop.taobao.detail.getdetail"
-const consoleLog = true
+const consoleLog = false
 const url = $request.url
+
 if (url.indexOf(path1) != -1) {
     if ($tool.isResponse) {
         const $base64 = new Base64()
@@ -24,9 +26,7 @@ if (url.indexOf(path1) != -1) {
             }
         }
         body = $base64.encode(JSON.stringify(obj))
-        $done({
-            body
-        })
+        $done({ body })
     } else {
         let headers = $request.headers
         let body = $request.body
@@ -44,11 +44,10 @@ if (url.indexOf(path1) != -1) {
             json.domain = domain.join(" ")
             body = Json2Qs(json)
         }
-        $done({
-            body
-        })
+        $done({ body })
     }
 }
+
 if (url.indexOf(path2) != -1) {
     const body = $response.body
     let obj = JSON.parse(body)
@@ -95,11 +94,10 @@ if (url.indexOf(path2) != -1) {
             } else {
                 sendNotify(msg)
             }
-            $done({
-                body: JSON.stringify(obj)
-            })
+            $done({ body: JSON.stringify(obj) })
         })
 }
+
 function sendNotify(data) {
     if (data.data.PricesHistory == null) {
         $tool.notify("", "", `暂无历史价格`)
@@ -108,6 +106,7 @@ function sendNotify(data) {
         $tool.notify("", "", `${detail}`)
     }
 }
+
 function setConsumerProtection(data, consumerProtection) {
     let basicService = consumerProtection.serviceProtection.basicService
     let items = consumerProtection.items
@@ -123,6 +122,7 @@ function setConsumerProtection(data, consumerProtection) {
     }
     return consumerProtection
 }
+
 function setTradeConsumerProtection(data, tradeConsumerProtection) {
     let service = tradeConsumerProtection.tradeConsumerService.service
     if (data.data.PricesHistory == null) {
@@ -136,6 +136,7 @@ function setTradeConsumerProtection(data, tradeConsumerProtection) {
     }
     return tradeConsumerProtection
 }
+
 function priceSummary(data) {
     let summary = `当前: ${data.CurrentPrice}${getSpace(8)}最低: ${data.LowestPrice} (${data.LowestDate})`
     let tbitems = [customItem(summary)]
@@ -147,6 +148,7 @@ function priceSummary(data) {
     });
     return [tbitems, summary]
 }
+
 function historySummary(list) {
     let currentPrice, lowest30, lowest90, lowest180, lowest360, price11, price618;
     list = list.reverse().slice(0, 360);
@@ -237,15 +239,17 @@ function historySummary(list) {
     });
     return [lowest30, lowest90, lowest180, lowest360, price618, price11];
 }
+
 async function request_history_price(share_url) {
     const options = {
         headers: {
             "Content-Type": "application/json; charset=utf-8",
         },
     };
-    const priceTrend = new Promise(function(resolve, reject) {
+
+    const priceTrend = new Promise(function (resolve, reject) {
         options.url = "https://price.icharle.com/?product_id=" + share_url;
-        $tool.get(options, function(error, response, data) {
+        $tool.get(options, function (error, response, data) {
             if (!error) {
                 resolve(JSON.parse(data));
             } else {
@@ -256,16 +260,18 @@ async function request_history_price(share_url) {
     const priceTrendData = await priceTrend;
     return priceTrendData;
 }
+
 function getExactTime(time) {
     var date = new Date(time * 1000);
     var year = date.getFullYear() + "-";
     var month =
-        (date.getMonth() + 1 < 10 ?
-            "0" + (date.getMonth() + 1) :
-            date.getMonth() + 1) + "-";
+        (date.getMonth() + 1 < 10
+            ? "0" + (date.getMonth() + 1)
+            : date.getMonth() + 1) + "-";
     var dates = date.getDate();
     return year + month + dates;
 }
+
 function difference(currentPrice, price) {
     let difference = sub(currentPrice, price)
     if (difference == 0) {
@@ -274,21 +280,21 @@ function difference(currentPrice, price) {
         return `${difference > 0 ? "↑" : "↓"}${String(Math.abs(difference))}`
     }
 }
+
 function sub(arg1, arg2) {
     return add(arg1, -Number(arg2), arguments[2]);
 }
+
 function add(arg1, arg2) {
     arg1 = arg1.toString(), arg2 = arg2.toString();
-    var arg1Arr = arg1.split("."),
-        arg2Arr = arg2.split("."),
-        d1 = arg1Arr.length == 2 ? arg1Arr[1] : "",
-        d2 = arg2Arr.length == 2 ? arg2Arr[1] : "";
+    var arg1Arr = arg1.split("."), arg2Arr = arg2.split("."), d1 = arg1Arr.length == 2 ? arg1Arr[1] : "", d2 = arg2Arr.length == 2 ? arg2Arr[1] : "";
     var maxLen = Math.max(d1.length, d2.length);
     var m = Math.pow(10, maxLen);
     var result = Number(((arg1 * m + arg2 * m) / m).toFixed(maxLen));
     var d = arguments[2];
     return typeof d === "number" ? Number((result).toFixed(d)) : result;
 }
+
 function getSpace(length) {
     let blank = "";
     for (let index = 0; index < length; index++) {
@@ -296,6 +302,7 @@ function getSpace(length) {
     }
     return blank;
 }
+
 function customItem(title, desc) {
     return {
         icon: "https://s2.ax1x.com/2020/02/16/3STeIJ.png",
@@ -304,11 +311,12 @@ function customItem(title, desc) {
         desc: desc
     }
 }
+
 function Qs2Json(url) {
     var search = url.substring(url.lastIndexOf("?") + 1);
     var obj = {};
     var reg = /([^?&=]+)=([^?&=]*)/g;
-    search.replace(reg, function(rs, $1, $2) {
+    search.replace(reg, function (rs, $1, $2) {
         var name = decodeURIComponent($1);
         var val = decodeURIComponent($2);
         val = String(val);
@@ -317,6 +325,7 @@ function Qs2Json(url) {
     });
     return obj;
 }
+
 function Json2Qs(json) {
     var temp = [];
     for (var k in json) {
@@ -324,10 +333,12 @@ function Json2Qs(json) {
     }
     return temp.join("&");
 }
-Array.prototype.insert = function(index, item) {
+
+Array.prototype.insert = function (index, item) {
     this.splice(index, 0, item);
 };
-Date.prototype.format = function(fmt) {
+
+Date.prototype.format = function (fmt) {
     var o = {
         "y+": this.getFullYear(),
         "M+": this.getMonth() + 1,
@@ -342,24 +353,25 @@ Date.prototype.format = function(fmt) {
         if (new RegExp("(" + k + ")").test(fmt)) {
             if (k == "y+") {
                 fmt = fmt.replace(RegExp.$1, ("" + o[k]).substr(4 - RegExp.$1.length));
-            } else if (k == "S+") {
+            }
+            else if (k == "S+") {
                 var lens = RegExp.$1.length;
                 lens = lens == 1 ? 3 : lens;
                 fmt = fmt.replace(RegExp.$1, ("00" + o[k]).substr(("" + o[k]).length - 1, lens));
-            } else {
+            }
+            else {
                 fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
             }
         }
     }
     return fmt;
 }
+
 function Tool() {
     _node = (() => {
         if (typeof require == "function") {
             const request = require('request')
-            return ({
-                request
-            })
+            return ({ request })
         } else {
             return (null)
         }
@@ -372,11 +384,7 @@ function Tool() {
     this.notify = (title, subtitle, message) => {
         if (_isQuanX) $notify(title, subtitle, message)
         if (_isSurge) $notification.post(title, subtitle, message)
-        if (_node) console.log(JSON.stringify({
-            title,
-            subtitle,
-            message
-        }));
+        if (_node) console.log(JSON.stringify({ title, subtitle, message }));
     }
     this.write = (value, key) => {
         if (_isQuanX) return $prefs.setValueForKey(value, key)
@@ -388,37 +396,21 @@ function Tool() {
     }
     this.get = (options, callback) => {
         if (_isQuanX) {
-            if (typeof options == "string") options = {
-                url: options
-            }
+            if (typeof options == "string") options = { url: options }
             options["method"] = "GET"
-            $task.fetch(options).then(response => {
-                callback(null, _status(response), response.body)
-            }, reason => callback(reason.error, null, null))
+            $task.fetch(options).then(response => { callback(null, _status(response), response.body) }, reason => callback(reason.error, null, null))
         }
-        if (_isSurge) $httpClient.get(options, (error, response, body) => {
-            callback(error, _status(response), body)
-        })
-        if (_node) _node.request(options, (error, response, body) => {
-            callback(error, _status(response), body)
-        })
+        if (_isSurge) $httpClient.get(options, (error, response, body) => { callback(error, _status(response), body) })
+        if (_node) _node.request(options, (error, response, body) => { callback(error, _status(response), body) })
     }
     this.post = (options, callback) => {
         if (_isQuanX) {
-            if (typeof options == "string") options = {
-                url: options
-            }
+            if (typeof options == "string") options = { url: options }
             options["method"] = "POST"
-            $task.fetch(options).then(response => {
-                callback(null, _status(response), response.body)
-            }, reason => callback(reason.error, null, null))
+            $task.fetch(options).then(response => { callback(null, _status(response), response.body) }, reason => callback(reason.error, null, null))
         }
-        if (_isSurge) $httpClient.post(options, (error, response, body) => {
-            callback(error, _status(response), body)
-        })
-        if (_node) _node.request.post(options, (error, response, body) => {
-            callback(error, _status(response), body)
-        })
+        if (_isSurge) $httpClient.post(options, (error, response, body) => { callback(error, _status(response), body) })
+        if (_node) _node.request.post(options, (error, response, body) => { callback(error, _status(response), body) })
     }
     _status = (response) => {
         if (response) {
@@ -431,11 +423,12 @@ function Tool() {
         return response
     }
 }
+
 function Base64() {
     // private property
     _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
     // public method for encoding
-    this.encode = function(input) {
+    this.encode = function (input) {
         var output = "";
         var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
         var i = 0;
@@ -460,7 +453,7 @@ function Base64() {
         return output;
     }
     // public method for decoding
-    this.decode = function(input) {
+    this.decode = function (input) {
         var output = "";
         var chr1, chr2, chr3;
         var enc1, enc2, enc3, enc4;
@@ -486,7 +479,7 @@ function Base64() {
         return output;
     }
     // private method for UTF-8 encoding
-    _utf8_encode = function(string) {
+    _utf8_encode = function (string) {
         string = string.replace(/\r\n/g, "\n");
         var utftext = "";
         for (var n = 0; n < string.length; n++) {
@@ -501,11 +494,12 @@ function Base64() {
                 utftext += String.fromCharCode(((c >> 6) & 63) | 128);
                 utftext += String.fromCharCode((c & 63) | 128);
             }
+
         }
         return utftext;
     }
     // private method for UTF-8 decoding
-    _utf8_decode = function(utftext) {
+    _utf8_decode = function (utftext) {
         var string = "";
         var i = 0;
         var c = c1 = c2 = 0;
