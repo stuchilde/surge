@@ -4,7 +4,7 @@ README：https://github.com/yichahucha/surge/tree/master
 const $tool = new Tool()
 const path1 = "/amdc/mobileDispatch"
 const path2 = "/gw/mtop.taobao.detail.getdetail"
-const consoleLog = false
+const consoleLog = true
 const url = $request.url
 if (url.indexOf(path1) != -1) {
     if ($tool.isResponse) {
